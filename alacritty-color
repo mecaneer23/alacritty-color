@@ -1,22 +1,27 @@
 #!/bin/python3.10
 import sys
+import os
 
 
 def print_if_log(message, end="\n"):
     print(message, end=end)
 
 
-with open("/home/mecaneer23/.config/alacritty/alacritty.yml", 'r') as f:
-    file = f.read()
-    setter_line = [i for i, l in enumerate(file.split("\n")) if l.startswith("colors:") or l == "#colors:*default"][0]
-    options = sorted([f"*{i.split(':')[0].strip()}" for i in file.split("\n") if '&' in i])
-    try:
-        default_theme = [file.split('\n')[i+1].split(':')[0].strip() for i, l in enumerate(file.split("\n")) if l.strip() == "###DEFAULT_THEME###"][0]
-    except IndexError:
-        print_if_log("Error: no default theme found\nMake sure you have ###DEFAULT_THEME### directly before the theme in your config file")
-        default_theme = options[0]
-    f.seek(0)
-    lines = f.readlines()
+try:
+    with open(os.path.expanduser("~/.config/alacritty/alacritty.yml")) as f:
+        file = f.read()
+        f.seek(0)
+        lines = f.readlines()
+except FileNotFoundError:
+    print_if_log("Error: ~/.config/alacritty/alacritty.yml not found")
+    exit()
+setter_line = [i for i, l in enumerate(file.split("\n")) if l.startswith("colors:") or l == "#colors:*default"][0]
+options = sorted([f"*{i.split(':')[0].strip()}" for i in file.split("\n") if '&' in i])
+try:
+    default_theme = [file.split('\n')[i+1].split(':')[0].strip() for i, l in enumerate(file.split("\n")) if l.strip() == "###DEFAULT_THEME###"][0]
+except IndexError:
+    print_if_log("Error: no default theme found\nMake sure you have ###DEFAULT_THEME### directly before the theme in your config file")
+    default_theme = options[0]
 
 
 def current():
@@ -42,7 +47,7 @@ def set_new(choice):
         lines[setter_line] = f"#colors:*default\n"
         print_if_log("Set Alacritty theme to default")
 
-    with open("/home/mecaneer23/.config/alacritty/alacritty.yml", "w") as f:
+    with open(".config/alacritty/alacritty.yml", "w") as f:
         f.writelines(lines)
 
 
