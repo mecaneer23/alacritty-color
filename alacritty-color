@@ -39,7 +39,6 @@ def lst_ops(use_input=True):
 
 
 def set_new(choice, should_print=True):
-    global lines
     if choice in range(len(options)):
         lines[setter_line] = f"colors: {options[choice]}\n"
         if should_print:
