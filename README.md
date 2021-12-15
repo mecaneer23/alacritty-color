@@ -19,7 +19,7 @@ $ sudo mv /path/to/alacritty-color /bin/alacritty-color
  theme-name: &theme-name
   ...
 ```
- - make sure you have a line, somewhere in your file with the follwing:
+ - make sure you have a line somewhere in your file with the follwing:
 ```yml
 colors: *theme-name
 ```
