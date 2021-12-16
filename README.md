@@ -55,7 +55,7 @@ $ sudo apt install cargo; cargo install alacritty
 [Python.org](https://www.python.org/downloads/windows/)
 ### Arch
 ```bash
-$ sudo yay -S python310
+$ sudo pacman -S python
 ```
 ### Debian/Ubuntu
 ```bash
