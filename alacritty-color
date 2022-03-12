@@ -3,10 +3,12 @@ import sys
 import os
 
 PATH = os.path.expanduser("~/.config/alacritty/alacritty.yml")
+LOG = True
 
 
 def print_if_log(message, end="\n"):
-    print(message, end=end)
+    if LOG:
+        print(message, end=end)
 
 
 try:
@@ -89,6 +91,8 @@ def convert_name_to_number(name):
 
 if len(sys.argv) > 1:
     sys.argv = [i.lower() for i in sys.argv]
+    if sys.argv[-1] in ("--no-echo", "-x"):
+        LOG = False
     flag = isflag()
     if flag != "true":
         set_new(flag)
@@ -152,7 +156,7 @@ if len(sys.argv) > 1:
                 case ("--help" | "-h"):
                     print_if_log(
                         "Usage:\n"
-                        "alacritty-color [number, theme, [+, -]]\n"
+                        "alacritty-color [number, theme, [+, -] [--no-echo, -x]]\n"
                         "alacritty-color --current, -c [[--name, -w], [--number, -d]]\n"
                         "alacritty-color --default, -d\n"
                         "alacritty-color --help, -h\n"
