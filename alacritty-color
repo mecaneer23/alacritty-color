@@ -2,38 +2,50 @@
 import sys
 import os
 
+PATH = os.path.expanduser("~/.config/alacritty/alacritty.yml")
+
 
 def print_if_log(message, end="\n"):
     print(message, end=end)
 
 
 try:
-    with open(os.path.expanduser("~/.config/alacritty/alacritty.yml")) as f:
+    with open(PATH) as f:
         file = f.read()
         f.seek(0)
         lines = f.readlines()
 except FileNotFoundError:
-    print_if_log("Error: ~/.config/alacritty/alacritty.yml not found")
+    print_if_log(f"Error: {PATH} not found")
     exit()
-setter_line = [i for i, l in enumerate(file.split("\n")) if l.startswith("colors:") or l == "#colors:*default"][0]
-options = sorted([f"*{i.split(':')[0].strip()}" for i in file.split("\n") if '&' in i])
+setter_line = [
+    i
+    for i, l in enumerate(file.split("\n"))
+    if l.startswith("colors:") or l == "#colors:*default"
+][0]
+options = sorted([f"*{i.split(':')[0].strip()}" for i in file.split("\n") if "&" in i])
 try:
-    default_theme = [file.split('\n')[i+1].split(':')[0].strip() for i, l in enumerate(file.split("\n")) if l.strip() == "###DEFAULT_THEME###"][0]
+    default_theme = [
+        file.split("\n")[i + 1].split(":")[0].strip()
+        for i, l in enumerate(file.split("\n"))
+        if l.strip() == "###DEFAULT_THEME###"
+    ][0]
 except IndexError:
-    print_if_log("Error: no default theme found\nMake sure you have ###DEFAULT_THEME### directly before the theme in your config file")
+    print_if_log(
+        "Error: no default theme found\nMake sure you have ###DEFAULT_THEME### directly before the theme in your config file"
+    )
     default_theme = options[0]
 
 
 def current():
-    return f"({options.index('*'+lines[setter_line][9:-1])}): {lines[setter_line][9:]}" or "hi"
+    return (
+        f"({options.index('*'+lines[setter_line][9:-1])}): {lines[setter_line][9:]}"
+        or "hi"
+    )
 
 
 def lst_ops(use_input=True):
-    printable_options = "\n".join(
-        [f"({i}): {v[1:]}" for i, v in enumerate(options)])
-    print_if_log(
-        f"Available themes are:\n{printable_options}"
-    )
+    printable_options = "\n".join([f"({i}): {v[1:]}" for i, v in enumerate(options)])
+    print_if_log(f"Available themes are:\n{printable_options}")
     if use_input:
         return int(input("Selection: "))
 
@@ -47,15 +59,15 @@ def set_new(choice, should_print=True):
         set_new(convert_name_to_number(default_theme), False)
         print_if_log("Set Alacritty theme to default")
 
-    with open(os.path.expanduser("~/.config/alacritty/alacritty.yml"), "w") as f:
+    with open(PATH, "w") as f:
         f.writelines(lines)
 
 
 def isflag(idx=1):
     options_no_star = [i[1:] for i in options]
-    if (sys.argv[idx].isdigit()):
+    if sys.argv[idx].isdigit():
         return int(sys.argv[idx])
-    elif (sys.argv[idx] in options_no_star):
+    elif sys.argv[idx] in options_no_star:
         return options_no_star.index(sys.argv[idx])
     else:
         return "true"
@@ -63,8 +75,8 @@ def isflag(idx=1):
 
 def plus(num):
     curr = int(current().split(":")[0].strip("()"))
-    if curr+num < len(options):
-        set_new(curr+num)
+    if curr + num < len(options):
+        set_new(curr + num)
     else:
         print_if_log("Error: reached end of list")
         set_new(curr)
@@ -81,45 +93,63 @@ if len(sys.argv) > 1:
     if flag != "true":
         set_new(flag)
     else:
-        if (sys.argv[1].startswith("-") or sys.argv[1].startswith("+")) and sys.argv[1][1:].isdigit():
+        if (sys.argv[1].startswith("-") or sys.argv[1].startswith("+")) and sys.argv[1][
+            1:
+        ].isdigit():
             plus(int(sys.argv[1]))
         else:
-            match(sys.argv[1]):
-                case("--set" | "-s"):
+            match (sys.argv[1]):
+                case ("--set" | "-s"):
                     set_new(isflag(2))
-                case("--current" | "-c"):
+                case ("--current" | "-c"):
                     if len(sys.argv) == 2:
                         print_if_log(current(), end="")
                     elif len(sys.argv) == 3:
-                        match(sys.argv[2]):
-                            case("--name" | "-w"):
-                                print_if_log(current().split(":")[1].strip("\" "), end="")
-                            case("--number" | "-d"):
+                        match (sys.argv[2]):
+                            case ("--name" | "-w"):
+                                print_if_log(
+                                    current().split(":")[1].strip('" '), end=""
+                                )
+                            case ("--number" | "-d"):
                                 print_if_log(current().split(":")[0].strip("()"))
-                            case(_):
+                            case (_):
                                 print_if_log("Error: invalid argument")
-                case("--list" | "-l"):
+                case ("--list" | "-l"):
                     if len(sys.argv) > 2:
                         try:
-                            print_if_log(f"({sys.argv[2]}): {options[int(sys.argv[2])][1:]}")
+                            print_if_log(
+                                f"({sys.argv[2]}): {options[int(sys.argv[2])][1:]}"
+                            )
                         except IndexError:
                             print_if_log("Make sure to include a valid number key")
                         except ValueError:
                             print_if_log("Make sure to include a valid number key")
                     else:
                         lst_ops(False)
-                case("--random" | "-r"):
+                case ("--random" | "-r"):
                     import random
+
                     set_new(random.randrange(len(options)))
-                case("--plus" | "-p"):
-                    plus(int(sys.argv[2]) if len(sys.argv) > 2 and (sys.argv[2].isdigit() or (sys.argv[2][0] in ('+', '-') and sys.argv[2][1:].isdigit())) else 1)
-                case("+"):
+                case ("--plus" | "-p"):
+                    plus(
+                        int(sys.argv[2])
+                        if len(sys.argv) > 2
+                        and (
+                            sys.argv[2].isdigit()
+                            or (
+                                sys.argv[2][0] in ("+", "-")
+                                and sys.argv[2][1:].isdigit()
+                            )
+                        )
+                        else 1
+                    )
+                case ("+"):
                     plus(1)
-                case("-"):
+                case ("-"):
                     plus(-1)
-                case("--default" | "-d"):
+                case ("--default" | "-d"):
                     set_new(convert_name_to_number(default_theme))
-                case("--help" | "-h"):
+                case ("--help" | "-h"):
                     print_if_log(
                         "Usage:\n"
                         "alacritty-color [number, theme, [+, -]]\n"
@@ -131,7 +161,7 @@ if len(sys.argv) > 1:
                         "alacritty-color --random, -r\n"
                         "alacritty-color --set, -s <number>\n"
                     )
-                case(_):
+                case (_):
                     print_if_log(f"Invalid command: {sys.argv[1]}")
 else:
     print_if_log(current())
