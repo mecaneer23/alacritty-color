@@ -11,6 +11,16 @@ A command-line utility to easily change your Alacritty color scheme
 ```bash
 $ sudo mv /path/to/alacritty-color /bin/alacritty-color
 ```
+
+### Install (only configuration file)
+
+```bash
+$ cd ~/.config/
+$ git clone https://github.com/mecaneer23/alacritty-color alacritty
+$ cd alacritty
+$ mv example-config.yml alacritty.yml
+```
+
 ### Recommended configuration changes (~/.config/alacritty/alacritty.yml)
  - Add `###DEFAULT_THEME###` to the line directly before your favorite theme -
  otherwise it will default to the first theme in the list (alphabetically)
