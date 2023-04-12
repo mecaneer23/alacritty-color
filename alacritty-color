@@ -1,6 +1,7 @@
 #!/bin/python3.10
 import sys
 import os
+import argparse
 
 PATH = os.path.expanduser("~/.config/alacritty/alacritty.yml")
 LOG = True
@@ -39,10 +40,7 @@ except IndexError:
 
 
 def current():
-    return (
-        f"({options.index('*'+lines[setter_line][9:-1])}): {lines[setter_line][9:]}"
-        or "hi"
-    )
+    return f"({options.index('*'+lines[setter_line][9:-1])}): {lines[setter_line][9:]}"
 
 
 def lst_ops(use_input=True):
@@ -85,8 +83,24 @@ def plus(num):
 
 
 def convert_name_to_number(name):
-    options_no_star = [i[1:] for i in options]
-    return options_no_star.index(name)
+    return options.index(f"*{name}")
+
+
+# def main():
+#     parser = argparse.ArgumentParser(description="Alacritty Color Themes", add_help=False)
+#     parser.add_argument("--help", "-h", action="help", help="show this help message and exit")
+#     parser.add_argument("--current", "-c", action="store_true", help="show current theme")
+#     parser.add_argument("--default", "-d", action="store_true", help="set to default theme")
+#     parser.add_argument("--list", "-l", type=int, nargs="+", help="show list of themes")
+#     parser.add_argument("--plus", "-p", type=int, nargs="+", help="switch to next theme")
+#     parser.add_argument("--random", "-r", action="store_true", help="set to random theme")
+#     parser.add_argument("--set", "-s", type=int, help="set to theme")
+
+
+#     args = parser.parse_args()
+
+# if __name__ == "__main__":
+#     main()
 
 
 if len(sys.argv) > 1:
