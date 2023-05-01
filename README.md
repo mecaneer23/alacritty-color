@@ -9,16 +9,13 @@ A command-line utility to easily change your Alacritty color scheme
  - Clone this repository
  - Run the following command to install:
 ```bash
-$ sudo mv /path/to/alacritty-color /bin/alacritty-color
+$ sudo mv /path/to/alacritty-color/alacritty-color /bin/alacritty-color
 ```
 
 ### Install (only configuration file)
 
 ```bash
-$ cd ~/.config/
-$ git clone https://github.com/mecaneer23/alacritty-color alacritty
-$ cd alacritty
-$ mv example-config.yml alacritty.yml
+git clone https://github.com/mecaneer23/alacritty-color ~/.config/alacritty
 ```
 
 ### Recommended configuration changes (~/.config/alacritty/alacritty.yml)
