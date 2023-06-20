@@ -103,89 +103,88 @@ def convert_name_to_number(name):
 #     main()
 
 
-if len(sys.argv) > 1:
+def main():
+    global LOG
+    if len(sys.argv) <= 1:
+        print_if_log(current())
+        try:
+            set_new(lst_ops())
+        except KeyboardInterrupt:
+            print_if_log(f"\n\nAlacritty theme: {current()}", end="")
+        except ValueError:
+            print_if_log("Make sure to include a valid scheme number or name")
+        return
     sys.argv = [i.lower() for i in sys.argv]
     if sys.argv[-1] in ("--no-echo", "-x"):
         LOG = False
     flag = isflag()
     if flag != "true":
         set_new(flag)
-    else:
-        if (sys.argv[1].startswith("-") or sys.argv[1].startswith("+")) and sys.argv[1][
-            1:
-        ].isdigit():
-            plus(int(sys.argv[1]))
-        else:
-            match (sys.argv[1]):
-                case ("--set" | "-s"):
-                    set_new(isflag(2))
-                case ("--current" | "-c"):
-                    if len(sys.argv) == 2:
-                        print_if_log(current(), end="")
-                    elif len(sys.argv) == 3:
-                        match (sys.argv[2]):
-                            case ("--name" | "-w"):
-                                print_if_log(
-                                    current().split(":")[1].strip('" '), end=""
-                                )
-                            case ("--number" | "-d"):
-                                print_if_log(current().split(":")[0].strip("()"))
-                            case (_):
-                                print_if_log("Error: invalid argument")
-                case ("--list" | "-l"):
-                    if len(sys.argv) > 2:
-                        try:
-                            print_if_log(
-                                f"({sys.argv[2]}): {options[int(sys.argv[2])][1:]}"
-                            )
-                        except IndexError:
-                            print_if_log("Make sure to include a valid number key")
-                        except ValueError:
-                            print_if_log("Make sure to include a valid number key")
-                    else:
-                        lst_ops(False)
-                case ("--random" | "-r"):
-                    import random
+        return
+    if (sys.argv[1].startswith("-") or sys.argv[1].startswith("+")) and sys.argv[1][
+        1:
+    ].isdigit():
+        plus(int(sys.argv[1]))
+        return
+    match (sys.argv[1]):
+        case ("--set" | "-s"):
+            set_new(isflag(2))
+        case ("--current" | "-c"):
+            if len(sys.argv) == 2:
+                print_if_log(current(), end="")
+            elif len(sys.argv) == 3:
+                match (sys.argv[2]):
+                    case ("--name" | "-w"):
+                        print_if_log(current().split(":")[1].strip('" '), end="")
+                    case ("--number" | "-d"):
+                        print_if_log(current().split(":")[0].strip("()"))
+                    case (_):
+                        print_if_log("Error: invalid argument")
+        case ("--list" | "-l"):
+            if len(sys.argv) <= 2:
+                lst_ops(False)
+                return
+            try:
+                print_if_log(f"({sys.argv[2]}): {options[int(sys.argv[2])][1:]}")
+            except IndexError:
+                print_if_log("Make sure to include a valid number key")
+            except ValueError:
+                print_if_log("Make sure to include a valid number key")
+        case ("--random" | "-r"):
+            import random
 
-                    set_new(random.randrange(len(options)))
-                case ("--plus" | "-p"):
-                    plus(
-                        int(sys.argv[2])
-                        if len(sys.argv) > 2
-                        and (
-                            sys.argv[2].isdigit()
-                            or (
-                                sys.argv[2][0] in ("+", "-")
-                                and sys.argv[2][1:].isdigit()
-                            )
-                        )
-                        else 1
-                    )
-                case ("+"):
-                    plus(1)
-                case ("-"):
-                    plus(-1)
-                case ("--default" | "-d"):
-                    set_new(convert_name_to_number(default_theme))
-                case ("--help" | "-h"):
-                    print_if_log(
-                        "Usage:\n"
-                        "alacritty-color [number, theme, [+, -] [--no-echo, -x]]\n"
-                        "alacritty-color --current, -c [[--name, -w], [--number, -d]]\n"
-                        "alacritty-color --default, -d\n"
-                        "alacritty-color --help, -h\n"
-                        "alacritty-color --list, -l [number]\n"
-                        "alacritty-color --plus, -p [number]\n"
-                        "alacritty-color --random, -r\n"
-                        "alacritty-color --set, -s <number>\n"
-                    )
-                case (_):
-                    print_if_log(f"Invalid command: {sys.argv[1]}")
-else:
-    print_if_log(current())
-    try:
-        set_new(lst_ops())
-    except KeyboardInterrupt:
-        print_if_log(f"\n\nAlacritty theme: {current()}", end="")
-    except ValueError:
-        print_if_log("Make sure to include a valid scheme number or name")
+            set_new(random.randrange(len(options)))
+        case ("--plus" | "-p"):
+            plus(
+                int(sys.argv[2])
+                if len(sys.argv) > 2
+                and (
+                    sys.argv[2].isdigit()
+                    or (sys.argv[2][0] in ("+", "-") and sys.argv[2][1:].isdigit())
+                )
+                else 1
+            )
+        case ("+"):
+            plus(1)
+        case ("-"):
+            plus(-1)
+        case ("--default" | "-d"):
+            set_new(convert_name_to_number(default_theme))
+        case ("--help" | "-h"):
+            print_if_log(
+                "Usage:\n"
+                "alacritty-color [number, theme, [+, -] [--no-echo, -x]]\n"
+                "alacritty-color --current, -c [[--name, -w], [--number, -d]]\n"
+                "alacritty-color --default, -d\n"
+                "alacritty-color --help, -h\n"
+                "alacritty-color --list, -l [number]\n"
+                "alacritty-color --plus, -p [number]\n"
+                "alacritty-color --random, -r\n"
+                "alacritty-color --set, -s <number>\n"
+            )
+        case (_):
+            print_if_log(f"Invalid command: {sys.argv[1]}")
+
+
+if __name__ == "__main__":
+    main()
