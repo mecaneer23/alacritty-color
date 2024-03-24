@@ -1,38 +1,28 @@
 #!/usr/bin/env python3
+# pylint: disable=invalid-name
+"""
+Show each regular and bold color in the current color scheme
+"""
 
-regular_colors = [
-    "\033[0;30m",
-    "\033[0;31m",
-    "\033[0;32m",
-    "\033[0;33m",
-    "\033[0;34m",
-    "\033[0;35m",
-    "\033[0;36m",
-    "\033[0;37m",
-]
-
-bold_colors = [
-    "\033[1;30m",
-    "\033[1;31m",
-    "\033[1;32m",
-    "\033[1;33m",
-    "\033[1;34m",
-    "\033[1;35m",
-    "\033[1;36m",
-    "\033[1;37m",
-]
-
-color_names = [
-    "Black",
-    "Red",
-    "Green",
-    "Yellow",
-    "Blue",
-    "Magenta",
-    "Cyan",
-    "White",
-]
+from typing import Iterable
 
 
-for i, (v1, v2) in enumerate(zip(regular_colors, bold_colors)):
-    print("\033[0m" + color_names[i].ljust(10) + " " * 5 + v1 + "█" * 5 + " " + v2 + "█" * 5)
+def generate_color_blocks() -> Iterable[str]:
+    """Generate a list of color blocks using ANSI"""
+    for color, name in enumerate(
+        (
+            "Black",
+            "Red",
+            "Green",
+            "Yellow",
+            "Blue",
+            "Magenta",
+            "Cyan",
+            "White",
+        )
+    ):
+        yield f"{name.ljust(10)}\033[0;3{color}m█████ \033[1;3{color}m█████\033[0m"
+
+
+if __name__ == "__main__":
+    print("\n".join(generate_color_blocks()))
